@@ -32,34 +32,26 @@ public class WebSecurity {
 				http.getSharedObject(AuthenticationManagerBuilder.class);
 		
 		authenticationManagerBuilder
-		.userDetailsService(userDetailsService)
-		.passwordEncoder(bCryptPasswordEncoder);
+			.userDetailsService(userDetailsService)
+			.passwordEncoder(bCryptPasswordEncoder);
 		
 		AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 		
 		AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager);
 		authenticationFilter.setFilterProcessesUrl("/users/login");
 		
-		
-		http.csrf((csrf) -> csrf.disable())
-		.authorizeHttpRequests((authorizeHttpRequests) -> {
-			try {
-				authorizeHttpRequests
-								.requestMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-						        .anyRequest().authenticated()
-						        .and()
-						        .authenticationManager(authenticationManager)
-						        .addFilter(authenticationFilter)
-						        .addFilter(new AuthorizationFilter(authenticationManager))
-						        .sessionManagement(management -> management
-						        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		});
-		
-		
-		return http.build();
+		 http
+         	.csrf((csrf) -> csrf.disable())
+         	.authorizeHttpRequests((authz) -> authz
+         			.requestMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
+         			.anyRequest().authenticated())
+         	.authenticationManager(authenticationManager)
+         	.addFilter(authenticationFilter)
+         	.addFilter(new AuthorizationFilter(authenticationManager))
+         	.sessionManagement((session) -> session
+         			.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+		 return http.build();
+
 	}
 }
