@@ -24,6 +24,7 @@ import com.mobile.app.ws.exceptions.UserServiceException;
 import com.mobile.app.ws.service.UserService;
 import com.mobile.app.ws.shared.dto.AddressDTO;
 import com.mobile.app.ws.shared.dto.UserDTO;
+import com.mobile.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.mobile.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.mobile.app.ws.ui.model.response.AddressesRest;
 import com.mobile.app.ws.ui.model.response.ErrorMessages;
@@ -146,4 +147,19 @@ public class UserController {
 		return modelMapper.map(addressesDTO, AddressesRest.class);
 	}
 	
+	@PostMapping(path = "/password-reset-request",
+			produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+			consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public OperationStatusModel requestReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
+		OperationStatusModel returnValue = new OperationStatusModel();
+		boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+		
+		returnValue.setOperationName(RequestOperationName.REQUEST_PASSWORD_RESET.name());
+		returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+		
+		if(operationResult) {
+			returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+		}
+		return returnValue;
+	}
 }

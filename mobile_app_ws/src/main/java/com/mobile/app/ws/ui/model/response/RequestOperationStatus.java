@@ -4,4 +4,5 @@ public enum RequestOperationStatus {
 
 	ERROR,
 	SUCCESS
+	
 }

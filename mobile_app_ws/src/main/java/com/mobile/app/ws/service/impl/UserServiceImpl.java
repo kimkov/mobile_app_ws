@@ -134,4 +134,22 @@ public class UserServiceImpl implements UserService{
 		}
 		return returnValue;
 	}
+
+	@Override
+	public boolean requestPasswordReset(String email) {
+		boolean  returnValue = false;
+		UserEntity userEntity = userRepository.findUserByEmail(email);
+		if(userEntity == null) {
+			return returnValue;
+		}
+		
+//		String token = Utils.generatePasswordResetToken(userEntity.getUserId());
+//		
+//		PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+//		passwordResetTokenEntity.setToken(token);
+//		passwordResetTokenEntity.setUserDetails(userEntity);
+//		passwordResetTokenRepository.save(passwordResetTokenEntity);
+		
+		return returnValue;
+	}
 }

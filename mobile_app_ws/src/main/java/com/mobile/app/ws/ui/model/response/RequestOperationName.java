@@ -2,5 +2,6 @@ package com.mobile.app.ws.ui.model.response;
 
 public enum RequestOperationName {
 
-	DELETE
+	DELETE,
+	REQUEST_PASSWORD_RESET
 }
