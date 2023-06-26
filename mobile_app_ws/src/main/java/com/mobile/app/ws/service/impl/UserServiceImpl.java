@@ -17,12 +17,14 @@ import org.springframework.stereotype.Service;
 
 import com.mobile.app.ws.exceptions.UserServiceException;
 import com.mobile.app.ws.io.entity.UserEntity;
+import com.mobile.app.ws.io.repository.PasswordResetTokenRepository;
 import com.mobile.app.ws.io.repository.UserRepository;
 import com.mobile.app.ws.service.UserService;
 import com.mobile.app.ws.shared.Utils;
 import com.mobile.app.ws.shared.dto.AddressDTO;
 import com.mobile.app.ws.shared.dto.UserDTO;
 import com.mobile.app.ws.ui.model.response.ErrorMessages;
+import com.mobile.app.ws.io.entity.PasswordResetTokenEntity;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	PasswordResetTokenRepository passwordResetTokenRepository;
 	
 	
 	
@@ -138,17 +143,19 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean requestPasswordReset(String email) {
 		boolean  returnValue = false;
+		
 		UserEntity userEntity = userRepository.findUserByEmail(email);
+		
 		if(userEntity == null) {
 			return returnValue;
 		}
 		
-//		String token = Utils.generatePasswordResetToken(userEntity.getUserId());
-//		
-//		PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
-//		passwordResetTokenEntity.setToken(token);
-//		passwordResetTokenEntity.setUserDetails(userEntity);
-//		passwordResetTokenRepository.save(passwordResetTokenEntity);
+		String token = new Utils().generatePasswordResetToken(userEntity.getUserId());
+		
+		PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+		passwordResetTokenEntity.setToken(token);
+		passwordResetTokenEntity.setUserDetails(userEntity);
+		passwordResetTokenRepository.save(passwordResetTokenEntity);
 		
 		return returnValue;
 	}
